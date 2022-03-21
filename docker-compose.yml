@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  pg:
+    image: "postgres:14.2"
+    ports:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: smart_hospital
+    volumes:
+      - ./volumes/pg-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: pg
+    ports:
+      - 8081:8080
+
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    command: rabbitmq-server
+    expose:
+      - 5672
+    ports:
+      - 5672
+      - 15672:15672
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.14
+    command: sh -c "[ ! -f m.cnf ] && touch m.cnf && echo 'listener 1883' >> m.conf && echo 'allow_anonymous true' >> m.conf; cat m.conf; /usr/sbin/mosquitto -c m.conf"
+    expose:
+      - 1883
+    ports:
+      - 1883
+
+  eventstore:
+    image: eventstore/eventstore:21.10.1-buster-slim
+    environment:
+      - EVENTSTORE_CLUSTER_SIZE=1
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - 1113
+      - 2113:2113
+    volumes:
+      - ./volumes/eventstore-data:/var/lib/eventstore
+      - ./volumes/eventstore-logs:/var/log/eventstore
+
+  smart-hospital:
+    depends_on:
+      - rabbitmq
+      - mosquitto
+      - eventstore
+      - pg
+    build:
+      context: ./services/smart-hospital
+    restart: unless-stopped
+    expose:
+      - 9000
+    ports:
+      - ${SMART_HOSPITAL_PORT}:9000
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - PORT=9000
+      - DB_HOST=pg
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_NAME=smart_hospital
+      - MQTT_URL=mqtt://mosquitto
+      - RABBIT_MQ_URL=amqp://rabbitmq
+      - EVENT_STORE_URL=esdb://eventstore:2113?tls=false
+      - SMART_HOSPITAL_UI=http://localhost:8080
+      - WAIT_HOSTS=pg:5432, mosquitto:1883, rabbitmq:5672, eventstore:2113
+
+  smart-hospital-ui:
+    build:
+      context: ./services/smart-hospital-ui
+    restart: unless-stopped
+    expose:
+      - 80
+    ports:
+      - ${SMART_HOSPITAL_UI_PORT}:80
+    env_file:
+      - .env
+    environment:
+      - REACT_APP_API_URL=http://localhost:9000
+
+  fake-monitoring:
+    depends_on:
+      - mosquitto
+    build:
+      context: ./services/fake-monitoring
+    restart: unless-stopped
+    expose:
+      - 9080
+    ports:
+      - ${FAKE_MONITORING_PORT}:9080
+    env_file:
+      - .env
+    environment:
+      - HTTP_PORT=9080
+      - MQTT_URL=mqtt://mosquitto
+      - WAIT_HOSTS=mosquitto:1883
