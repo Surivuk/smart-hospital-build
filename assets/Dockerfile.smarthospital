@@ -11,9 +11,9 @@ RUN npm i typescript
 
 # Bundle app source
 COPY migrations/ ./migrations
-COPY knexfile.js ./
+COPY knexfile.ts ./
 COPY dist/ ./dist
-COPY loadEnv.ts ./
+COPY loadEnv.js ./
 COPY start.sh ./
 RUN chmod +x ./start.sh
 
