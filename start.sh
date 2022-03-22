@@ -1,5 +1,5 @@
 #!/bin/bash
-# set -x
+# set -xg
 set -e
 
 create_folder_if_no_exists() {

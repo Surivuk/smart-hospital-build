@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.c2b9d83f.css","mappings":"AAAA,KACI,g6BAAsD,CACtD,wBACJ","sources":["index.css"],"sourcesContent":["body {\n    background-image: url(\"/public/images/cream_dust.png\");\n    background-repeat: repeat;\n}"],"names":[],"sourceRoot":""}

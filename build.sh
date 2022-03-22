@@ -99,5 +99,3 @@ cp "$ASSETS_FOLDER/start.smarthospitalui.sh" "$SERVICES_FOLDER/$SMART_HOSPITA_UI
 # Fake Monitoring
 cp "$ASSETS_FOLDER/Dockerfile.fakemonitoring" "$SERVICES_FOLDER/$FAKE_MONITORING/Dockerfile"
 cp "$ASSETS_FOLDER/start.fakemonitoring.sh" "$SERVICES_FOLDER/$FAKE_MONITORING/start.sh"
-
-rm -r "$BUILD_FOLDER"

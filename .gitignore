@@ -1,2 +1,3 @@
 build/
 volumes/
+!services/smart-hospital-ui/build/
