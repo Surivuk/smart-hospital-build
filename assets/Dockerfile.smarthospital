@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm i --production
+RUN npm i typescript
 
 # Bundle app source
 COPY migrations/ ./migrations
