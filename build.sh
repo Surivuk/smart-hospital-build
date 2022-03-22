@@ -43,7 +43,7 @@ make_smart_hospital() {
     cp -r "$SOURCE/dist" ./
     cp "$SOURCE/package.json" ./
     cp "$SOURCE/package-lock.json" ./
-    cp "$SOURCE/knexfile.ts" ./
+    cp "$SOURCE/dist/knexfile.js" ./
     cp "$SOURCE/loadEnv.js" ./
     cd "$HOME_FOLDER"
 }

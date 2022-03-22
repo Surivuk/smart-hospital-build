@@ -10,7 +10,7 @@ RUN npm i --production
 
 # Bundle app source
 COPY migrations/ ./migrations
-COPY knexfile.ts ./
+COPY knexfile.js ./
 COPY dist/ ./dist
 COPY loadEnv.js ./
 COPY start.sh ./
