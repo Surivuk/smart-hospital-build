@@ -79,12 +79,12 @@ make_fake_monitoring() {
 
 # BUILD
 build_project "$SMART_HOSPITA" "$SMART_HOSPITA_GIT"
-# build_project "$BUILD_FOLDER/$SMART_HOSPITA_UI" "$SMART_HOSPITA_UI_GIT"
-# build_project "$BUILD_FOLDER/$FAKE_MONITORING" "$FAKE_MONITORING_GIT"
+build_project "$BUILD_FOLDER/$SMART_HOSPITA_UI" "$SMART_HOSPITA_UI_GIT"
+build_project "$BUILD_FOLDER/$FAKE_MONITORING" "$FAKE_MONITORING_GIT"
 
 make_smart_hospital
-# make_smart_hospital_ui
-# make_fake_monitoring
+make_smart_hospital_ui
+make_fake_monitoring
 
 # COPY ASSETS
 # Smart Hospital

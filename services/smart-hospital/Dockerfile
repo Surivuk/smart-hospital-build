@@ -13,7 +13,7 @@ RUN npm i typescript
 COPY migrations/ ./migrations
 COPY knexfile.js ./
 COPY dist/ ./dist
-COPY loadEnv.js ./
+COPY loadEnv.ts ./
 COPY start.sh ./
 RUN chmod +x ./start.sh
 
